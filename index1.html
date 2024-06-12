@@ -1,0 +1,167 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN" "http://www.w3.org/TR/html4/loose.dtd">
+<html lang="en">
+<head>
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <title>Imazone Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style type="text/css">
+        body {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f8f9fa;
+        }
+
+        .title {
+            font-size: 48px;
+            font-weight: bold;
+            margin-bottom: 40px;
+            font-family: 'Trebuchet MS', sans-serif;
+            letter-spacing: 0.05em;
+        }
+
+        .title .blue {
+            color: #4285f4;
+        }
+
+        .title .black {
+            color: #000000;
+        }
+
+        .search-container {
+            display: flex;
+            align-items: center;
+            padding: 10px 20px;
+            width: 600px;
+            border-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: #ffffff;
+            border: 1px solid #e0e0e0;
+            position: relative;
+        }
+
+        .gcse-container {
+            width: 100%;
+            position: relative;
+        }
+
+        .gcse-container input.gsc-input {
+            width: calc(100% - 120px); /* Adjusted for all icons */
+            padding: 10px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .gcse-container .gsc-search-button {
+            display: none; /* Hide default search button */
+        }
+
+        .gcse-container .gsc-input-box, .gcse-container .gsc-input {
+            border: none;
+            box-shadow: none;
+        }
+
+        .gcse-container .gsc-input-box {
+            padding: 0;
+            margin: 0;
+        }
+
+        .gcse-container .gsc-control-cse {
+            padding: 0;
+            margin: 0;
+        }
+
+        .gcse-container .gsc-branding {
+            display: none; /* Remove "Enhanced by Google" branding */
+        }
+
+        .gcse-container .gsc-clear-button {
+            display: none; /* Hide clear result icon */
+        }
+
+        .icon-container {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            right: 10px;
+        }
+
+        .icon-container .icon {
+            font-size: 20px;
+            margin-left: 10px;
+            cursor: pointer;
+            color: #777;
+        }
+    </style>
+    <script type="text/javascript">
+        function triggerSearch() {
+            var inputElement = document.querySelector('.gcse-container input.gsc-input');
+            if (inputElement) {
+                var event = document.createEvent('KeyboardEvent');
+                event.initKeyboardEvent('keydown', true, true, window, 'Enter', 0, '', false, '');
+                inputElement.dispatchEvent(event);
+            }
+        }
+
+        function startVoiceSearch() {
+            if (window.webkitSpeechRecognition) {
+                var recognition = new webkitSpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.start();
+
+                recognition.onresult = function(event) {
+                    var result = event.results[0][0].transcript;
+                    var inputElement = document.querySelector('input.gsc-input');
+                    if (inputElement) {
+                        inputElement.value = result;
+                        triggerSearch();
+                    }
+                };
+            } else {
+                alert('Your browser does not support voice search.');
+            }
+        }
+
+        function startPhotoSearch() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(event) {
+                var file = event.target.files[0];
+                if (file) {
+                    alert('Photo search not implemented yet. File selected: ' + file.name);
+                }
+            };
+            input.click();
+        }
+    </script>
+</head>
+<body>
+    <div class="title">
+        <span class="black">I</span>
+        <span class="blue">m</span>
+        <span class="black">a</span>
+        <span class="black">z</span>
+        <span class="black">o</span>
+        <span class="black">n</span>
+        <span class="black">e</span>
+    </div>
+    <div class="search-container">
+        <div class="gcse-container">
+            <script type="text/javascript" async src="https://cse.google.com/cse.js?cx=d71e67710b9744b46"></script>
+            <div class="gcse-search"></div>
+        </div>
+        <div class="icon-container">
+            <i class="fas fa-search icon" onclick="triggerSearch()"></i>
+            <i class="fas fa-microphone icon" onclick="startVoiceSearch()"></i>
+            <i class="fas fa-camera icon" onclick="startPhotoSearch()"></i>
+        </div>
+    </div>
+</body>
+</html>
