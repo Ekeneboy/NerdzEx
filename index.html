@@ -3,80 +3,496 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>NerdzEx</title>
+    <title>Imazone Search</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
     <style>
         body {
             display: flex;
             flex-direction: column;
-            justify-content: center;
             align-items: center;
+            justify-content: center;
             height: 100vh;
             margin: 0;
             font-family: Arial, sans-serif;
-            background-color: #f4f4f4;
+            background: linear-gradient(to right, #4286f4, #f44242);
+            background-size: cover;
+            background-position: center;
+            background-repeat: no-repeat;
+            color: white;
+            text-shadow: 0px 0px 5px #000000;
         }
 
-        .container {
-            text-align: center;
-            margin-bottom: 20px;
-        }
-
-        .logo {
-            font-size: 64px;
+        .title {
+            font-size: 48px;
             font-weight: bold;
-            color: #333;
+            margin-bottom: 20px;
+            font-family: 'Trebuchet MS', sans-serif;
+            letter-spacing: 0.05em;
         }
 
-        .letter {
-            display: inline-block;
-            transition: transform 0.3s;
+        .title .blue {
+            color: #4285f4;
         }
 
-        .letter:hover {
-            transform: scale(1.2);
+        .title .black {
+            color: white;
         }
 
-        .highlight {
-            color: #4285f4; /* Google blue */
-        }
-
-        .next-icon {
+        .search-container {
             display: flex;
             align-items: center;
+            padding: 10px 20px;
+            width: 600px;
+            border-radius: 25px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            background-color: rgba(255, 255, 255, 0.8);
+            border: 1px solid #e0e0e0;
+            position: relative;
+        }
+
+        .gcse-container {
+            width: 100%;
+            position: relative;
+        }
+
+        .gcse-container input.gsc-input {
+            width: calc(100% - 200px);
+            padding: 10px;
+            border: none;
+            outline: none;
+            font-size: 16px;
+            color: #555;
+        }
+
+        .gcse-container .gsc-search-button {
+            display: none;
+        }
+
+        .gcse-container .gsc-input-box, .gcse-container .gsc-input {
+            border: none;
+            box-shadow: none;
+        }
+
+        .gcse-container .gsc-input-box {
+            padding: 0;
+            margin: 0;
+        }
+
+        .gcse-container .gsc-control-cse {
+            padding: 0;
+            margin: 0;
+        }
+
+        .gcse-container .gsc-branding {
+            display: none;
+        }
+
+        .gcse-container .gsc-clear-button {
+            display: none;
+        }
+
+        .icon-container {
+            display: flex;
+            align-items: center;
+            position: absolute;
+            right: 10px;
+        }
+
+        .icon-container .icon {
             font-size: 20px;
-            text-decoration: none;
-            color: #4285f4;
-            font-weight: bold;
+            margin-left: 10px;
+            cursor: pointer;
+            color: #777;
+        }
+
+        .search-history {
             margin-top: 20px;
+            width: 600px;
+            background-color: rgba(255, 255, 255, 0.8);
+            border-radius: 10px;
+            padding: 10px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
         }
 
-        .next-icon svg {
-            margin-left: 8px;
-            transition: transform 0.3s;
+        .search-history h3 {
+            margin: 0;
+            font-size: 18px;
+            color: #555;
         }
 
-        .next-icon:hover svg {
-            transform: translateX(5px);
+        .search-history ul {
+            list-style: none;
+            padding: 0;
+            margin: 10px 0 0 0;
         }
+
+        .search-history li {
+            padding: 5px 10px;
+            border-bottom: 1px solid #eee;
+            cursor: pointer;
+        }
+
+        .search-history li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .background-icon-container {
+            position: absolute;
+            top: 10px;
+            right: 10px;
+            z-index: 100; /* Ensure it stays on top */
+        }
+
+        .background-icon-container .icon {
+            font-size: 24px;
+            cursor: pointer;
+            color: #fff;
+            background-color: rgba(0, 0, 0, 0.5);
+            padding: 8px;
+            border-radius: 50%;
+        }
+
+        .background-options {
+            display: none;
+            position: absolute;
+            top: 40px;
+            right: 0;
+            background-color: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+            color: black;
+            z-index: 10;
+            width: 250px;
+            max-height: 300px;
+            overflow-y: auto;
+        }
+
+        .background-options li {
+            list-style: none;
+            padding: 10px;
+            cursor: pointer;
+            border-bottom: 1px solid #eee;
+        }
+
+        .background-options li:hover {
+            background-color: #f0f0f0;
+        }
+
+        .background-color-grid {
+            display: flex;
+            flex-wrap: wrap;
+        }
+
+        .color-option {
+            width: 30px;
+            height: 30px;
+            margin: 5px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        /* Gradient colors */
+        .gradient-1 { background: linear-gradient(to right, #FF5733, #FFC300); }
+        .gradient-2 { background: linear-gradient(to right, #C70039, #900C3F); }
+        .gradient-3 { background: linear-gradient(to right, #581845, #900C3F); }
+        .gradient-4 { background: linear-gradient(to right, #1C1C1C, #FF6F61); }
+        .gradient-5 { background: linear-gradient(to right, #2F74C0, #FF7F50); }
+
+        /* Mixed colors */
+        .mixed-1 { background: #F8C471; }
+        .mixed-2 { background: #A569BD; }
+        .mixed-3 { background: #76D7C4; }
+        .mixed-4 { background: #F1948A; }
+        .mixed-5 { background: #F9E79F; }
+
+        /* Vivid colors */
+        .color-red { background: #FF0000; }
+        .color-green { background: #00FF00; }
+        .color-blue { background: #0000FF; }
+        .color-yellow { background: #FFFF00; }
+        .color-orange { background: #FFA500; }
+        .color-purple { background: #800080; }
+        .color-pink { background: #FFC0CB; }
+        .color-cyan { background: #00FFFF; }
+        .color-lightblue { background: #ADD8E6; }
+        .color-lime { background: #00FF00; }
+        .color-brown { background: #A52A2A; }
+        .color-teal { background: #008080; }
+        .color-navy { background: #000080; }
+        .color-gold { background: #FFD700; }
+        .color-silver { background: #C0C0C0; }
+        .color-grey { background: #808080; }
+        .color-skyblue { background: #87CEEB; }
+        .color-coral { background: #FF7F50; }
+        .color-mint { background: #98FF98; }
+        .color-peach { background: #FFDAB9; }
+        .color-chocolate { background: #D2691E; }
+        .color-salmon { background: #FA8072; }
+        .color-olive { background: #808000; }
+        .color-khaki { background: #F0E68C; }
+        .color-sienna { background: #A0522D; }
+        .color-tomato { background: #FF6347; }
+        .color-darkgreen { background: #006400; }
+        .color-crimson { background: #DC143C; }
+        .color-slate { background: #708090; }
+        .color-peru { background: #CD853F; }
+        .color-mistyrose { background: #FFE4E1; }
+        .color-bisque { background: #FFE4C4; }
+        .color-wheat { background: #F5DEB3; }
+        .color-rosybrown { background: #BC8F8F; }
+        .color-lightgrey { background: #D3D3D3; }
+        .color-lightgreen { background: #90EE90; }
+        .color-lightpink { background: #FFB6C1; }
+        .color-lavender { background: #E6E6FA; }
+        .color-plum { background: #DDA0DD; }
+        .color-thistle { background: #D8BFD8; }
+        .color-lightyellow { background: #FFFFE0; }
+        .color-darkkhaki { background: #BDB76B; }
+        .color-ivory { background: #FFFFF0; }
+        .color-burlywood { background: #DEB887; }
+        .color-ghostwhite { background: #F8F8FF; }
+        .color-darkslategray { background: #2F4F4F; }
+        .color-dimgray { background: #696969; }
+
     </style>
+    <script>
+        let isBackgroundOptionsVisible = false;
+
+        function saveSearch(query) {
+            if (!query) return;
+
+            let searches = JSON.parse(localStorage.getItem('searches')) || [];
+            searches.push(query);
+            localStorage.setItem('searches', JSON.stringify(searches));
+            displaySearchHistory();
+        }
+
+        function triggerSearch() {
+            var inputElement = document.querySelector('.gcse-container input.gsc-input');
+            if (inputElement) {
+                var query = inputElement.value;
+                saveSearch(query);
+
+                var event = document.createEvent('KeyboardEvent');
+                event.initKeyboardEvent('keydown', true, true, window, 'Enter', 0, '', false, '');
+                inputElement.dispatchEvent(event);
+            }
+        }
+
+        function startVoiceSearch() {
+            if (window.webkitSpeechRecognition) {
+                var recognition = new webkitSpeechRecognition();
+                recognition.lang = 'en-US';
+                recognition.start();
+
+                recognition.onresult = function(event) {
+                    var result = event.results[0][0].transcript;
+                    var inputElement = document.querySelector('input.gsc-input');
+                    if (inputElement) {
+                        inputElement.value = result;
+                        saveSearch(result);
+                        triggerSearch();
+                    }
+                };
+            } else {
+                alert('Your browser does not support voice search.');
+            }
+        }
+
+        function startPhotoSearch() {
+            var input = document.createElement('input');
+            input.type = 'file';
+            input.accept = 'image/*';
+            input.onchange = function(event) {
+                var file = event.target.files[0];
+                if (file) {
+                    alert('Photo search not implemented yet. File selected: ' + file.name);
+                }
+            };
+            input.click();
+        }
+
+        function initImageSearch() {
+            var inputElement = document.querySelector('.gcse-container input.gsc-input');
+            var query = inputElement.value;
+            saveSearch(query);
+            var cx = 'd71e67710b9744b46';
+            var url = 'https://cse.google.com/cse?cx=' + cx + '&q=' + encodeURIComponent(query) + '&searchType=image';
+            window.open(url, '_blank');
+        }
+
+        function initVideoSearch() {
+            var inputElement = document.querySelector('.gcse-container input.gsc-input');
+            var query = inputElement.value;
+            saveSearch(query);
+            var cx = 'd71e67710b9744b46';
+            var url = 'https://cse.google.com/cse?cx=' + cx + '&q=' + encodeURIComponent(query) + '&searchType=video';
+            window.open(url, '_blank');
+        }
+
+        function displaySearchHistory() {
+            let searches = JSON.parse(localStorage.getItem('searches')) || [];
+            let historyContainer = document.getElementById('search-history');
+            let historyList = historyContainer.querySelector('ul');
+            historyList.innerHTML = '';
+
+            searches.reverse().forEach(function(search) {
+                let listItem = document.createElement('li');
+                listItem.textContent = search;
+                listItem.onclick = function() {
+                    let inputElement = document.querySelector('.gcse-container input.gsc-input');
+                    inputElement.value = search;
+                    triggerSearch();
+                };
+                historyList.appendChild(listItem);
+            });
+        }
+
+        function setBackground(event) {
+            var file = event.target.files[0];
+            if (file) {
+                var reader = new FileReader();
+                reader.onload = function(e) {
+                    document.body.style.backgroundImage = 'url(' + e.target.result + ')';
+                    localStorage.setItem('backgroundImage', e.target.result);
+                };
+                reader.readAsDataURL(file);
+            }
+        }
+
+        function setBackgroundFromURL() {
+            var url = prompt("Enter the URL of the image:");
+            if (url) {
+                document.body.style.backgroundImage = 'url(' + url + ')';
+                localStorage.setItem('backgroundImage', url);
+            }
+        }
+
+        function restoreBackground() {
+            let backgroundImage = localStorage.getItem('backgroundImage');
+            if (backgroundImage) {
+                document.body.style.backgroundImage = 'url(' + backgroundImage + ')';
+            }
+        }
+
+        function resetBackground() {
+            document.body.style.background = 'linear-gradient(to right, #4286f4, #f44242)';
+            localStorage.removeItem('backgroundImage');
+        }
+
+        function toggleBackgroundOptions() {
+            let options = document.querySelector('.background-options');
+            isBackgroundOptionsVisible = !isBackgroundOptionsVisible;
+            options.style.display = isBackgroundOptionsVisible ? 'block' : 'none';
+        }
+
+        function setBackgroundColor(color) {
+            document.body.style.background = color;
+            localStorage.removeItem('backgroundImage');
+        }
+
+        document.addEventListener('DOMContentLoaded', function() {
+            restoreBackground();
+            displaySearchHistory();
+
+            let bgIcon = document.querySelector('.background-icon-container .icon');
+            bgIcon.addEventListener('click', toggleBackgroundOptions);
+        });
+    </script>
 </head>
 <body>
-    <div class="container">
-        <div class="logo">
-            <span class="letter">N</span>
-            <span class="letter highlight">e</span>
-            <span class="letter">r</span>
-            <span class="letter">d</span>
-            <span class="letter">z</span>
-            <span class="letter">E</span>
-            <span class="letter">x</span>
+    <div class="title"><span class="blue">M</span><span class="black">azon</span></div>
+
+    <div class="search-container">
+        <div class="gcse-container">
+            <script async src="https://cse.google.com/cse.js?cx=d71e67710b9744b46"></script>
+            <div class="gcse-search"></div>
+        </div>
+        <div class="icon-container">
+            <i class="fas fa-search icon" onclick="triggerSearch()"></i>
+            <i class="fas fa-microphone icon" onclick="startVoiceSearch()"></i>
+            <i class="fas fa-camera icon" onclick="startPhotoSearch()"></i>
+            <i class="fas fa-image icon" onclick="initImageSearch()"></i>
+            <i class="fas fa-video icon" onclick="initVideoSearch()"></i>
         </div>
     </div>
-    <a class="next-icon" href="index1.html" target="_blank">
-        Next
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-            <path d="M8 5L15 12L8 19" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
-        </svg>
-    </a>
+
+    <div class="background-icon-container">
+        <i class="fas fa-paint-brush icon"></i>
+        <ul class="background-options">
+            <li onclick="resetBackground()">Reset to Gradient</li>
+            <li>
+                <input type="file" accept="image/*" style="display:none" id="upload-bg" onchange="setBackground(event)">
+                <label for="upload-bg">Upload Background Image</label>
+            </li>
+            <li onclick="setBackgroundFromURL()">Upload Background Image from URL</li>
+            <li>Choose Background Color</li>
+            <div class="background-color-grid">
+                <div class="color-option gradient-1" onclick="setBackgroundColor('linear-gradient(to right, #FF5733, #FFC300)')"></div>
+                <div class="color-option gradient-2" onclick="setBackgroundColor('linear-gradient(to right, #C70039, #900C3F)')"></div>
+                <div class="color-option gradient-3" onclick="setBackgroundColor('linear-gradient(to right, #581845, #900C3F)')"></div>
+                <div class="color-option gradient-4" onclick="setBackgroundColor('linear-gradient(to right, #1C1C1C, #FF6F61)')"></div>
+                <div class="color-option gradient-5" onclick="setBackgroundColor('linear-gradient(to right, #2F74C0, #FF7F50)')"></div>
+                <div class="color-option mixed-1" onclick="setBackgroundColor('#F8C471')"></div>
+                <div class="color-option mixed-2" onclick="setBackgroundColor('#A569BD')"></div>
+                <div class="color-option mixed-3" onclick="setBackgroundColor('#76D7C4')"></div>
+                <div class="color-option mixed-4" onclick="setBackgroundColor('#F1948A')"></div>
+                <div class="color-option mixed-5" onclick="setBackgroundColor('#F9E79F')"></div>
+                <div class="color-option color-red" onclick="setBackgroundColor('#FF0000')"></div>
+                <div class="color-option color-green" onclick="setBackgroundColor('#00FF00')"></div>
+                <div class="color-option color-blue" onclick="setBackgroundColor('#0000FF')"></div>
+                <div class="color-option color-yellow" onclick="setBackgroundColor('#FFFF00')"></div>
+                <div class="color-option color-orange" onclick="setBackgroundColor('#FFA500')"></div>
+                <div class="color-option color-purple" onclick="setBackgroundColor('#800080')"></div>
+                <div class="color-option color-pink" onclick="setBackgroundColor('#FFC0CB')"></div>
+                <div class="color-option color-cyan" onclick="setBackgroundColor('#00FFFF')"></div>
+                <div class="color-option color-lightblue" onclick="setBackgroundColor('#ADD8E6')"></div>
+                <div class="color-option color-lime" onclick="setBackgroundColor('#00FF00')"></div>
+                <div class="color-option color-brown" onclick="setBackgroundColor('#A52A2A')"></div>
+                <div class="color-option color-teal" onclick="setBackgroundColor('#008080')"></div>
+                <div class="color-option color-navy" onclick="setBackgroundColor('#000080')"></div>
+                <div class="color-option color-gold" onclick="setBackgroundColor('#FFD700')"></div>
+                <div class="color-option color-silver" onclick="setBackgroundColor('#C0C0C0')"></div>
+                <div class="color-option color-grey" onclick="setBackgroundColor('#808080')"></div>
+                <div class="color-option color-skyblue" onclick="setBackgroundColor('#87CEEB')"></div>
+                <div class="color-option color-coral" onclick="setBackgroundColor('#FF7F50')"></div>
+                <div class="color-option color-mint" onclick="setBackgroundColor('#98FF98')"></div>
+                <div class="color-option color-peach" onclick="setBackgroundColor('#FFDAB9')"></div>
+                <div class="color-option color-chocolate" onclick="setBackgroundColor('#D2691E')"></div>
+                <div class="color-option color-salmon" onclick="setBackgroundColor('#FA8072')"></div>
+                <div class="color-option color-olive" onclick="setBackgroundColor('#808000')"></div>
+                <div class="color-option color-khaki" onclick="setBackgroundColor('#F0E68C')"></div>
+                <div class="color-option color-sienna" onclick="setBackgroundColor('#A0522D')"></div>
+                <div class="color-option color-tomato" onclick="setBackgroundColor('#FF6347')"></div>
+                <div class="color-option color-darkgreen" onclick="setBackgroundColor('#006400')"></div>
+                <div class="color-option color-crimson" onclick="setBackgroundColor('#DC143C')"></div>
+                <div class="color-option color-slate" onclick="setBackgroundColor('#708090')"></div>
+                <div class="color-option color-peru" onclick="setBackgroundColor('#CD853F')"></div>
+                <div class="color-option color-mistyrose" onclick="setBackgroundColor('#FFE4E1')"></div>
+                <div class="color-option color-bisque" onclick="setBackgroundColor('#FFE4C4')"></div>
+                <div class="color-option color-wheat" onclick="setBackgroundColor('#F5DEB3')"></div>
+                <div class="color-option color-rosybrown" onclick="setBackgroundColor('#BC8F8F')"></div>
+                <div class="color-option color-lightgrey" onclick="setBackgroundColor('#D3D3D3')"></div>
+                <div class="color-option color-lightgreen" onclick="setBackgroundColor('#90EE90')"></div>
+                <div class="color-option color-lightpink" onclick="setBackgroundColor('#FFB6C1')"></div>
+                <div class="color-option color-lavender" onclick="setBackgroundColor('#E6E6FA')"></div>
+                <div class="color-option color-plum" onclick="setBackgroundColor('#DDA0DD')"></div>
+                <div class="color-option color-thistle" onclick="setBackgroundColor('#D8BFD8')"></div>
+                <div class="color-option color-lightyellow" onclick="setBackgroundColor('#FFFFE0')"></div>
+                <div class="color-option color-darkkhaki" onclick="setBackgroundColor('#BDB76B')"></div>
+                <div class="color-option color-ivory" onclick="setBackgroundColor('#FFFFF0')"></div>
+                <div class="color-option color-burlywood" onclick="setBackgroundColor('#DEB887')"></div>
+                <div class="color-option color-ghostwhite" onclick="setBackgroundColor('#F8F8FF')"></div>
+                <div class="color-option color-darkslategray" onclick="setBackgroundColor('#2F4F4F')"></div>
+                <div class="color-option color-dimgray" onclick="setBackgroundColor('#696969')"></div>
+            </div>
+        </ul>
+    </div>
+
+    <div id="search-history" class="search-history">
+        <h3>Recent Searches</h3>
+        <ul></ul>
+    </div>
 </body>
 </html>
