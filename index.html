@@ -828,13 +828,16 @@ window.NerdzEx = window.NerdzEx || {};
     // The function keeps GROQ_API_KEY server-side only — never expose it
     // in this file. See the companion groq-search.js starter.
     function fetchSummary(query){
-      return new Promise(function(resolve){
-        setTimeout(function(){
-          resolve('AI summaries are stubbed for now. Once the Groq-backed Netlify Function is live, this card will show a concise, sourced summary for "' + query + '" before the results below.');
-        }, 650);
-      });
-    }
+  return fetch('/.netlify/functions/groq-search', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ query: query })
+  })
+    .then(function(r){ return r.json(); })
+    .then(function(data){ return data.summary; });
+           }
 
+       
     function run(query){
       showLoading();
       fetchSummary(query).then(showSummary);
